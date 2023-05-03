@@ -16,8 +16,8 @@ Category.objects.create(name='django')
 Category.objects.create(name='skills')
 
 # Добавить 2 статьи и 1 новость.
-Post.objects.create(author=Author.objects.get(user__username='best_user'), post_type='article', title='best_post', text='Text1')
-Post.objects.create(author=Author.objects.get(user__username='best_user'), post_type='article', title='best_post2', text='Text2')
+Post.objects.create(author=Author.objects.get(user__username='best_user'), post_type='article', title='Редиска', text='Text1')
+Post.objects.create(author=Author.objects.get(user__username='best_user'), post_type='article', title='best_post2', text='Редиска')
 Post.objects.create(author=Author.objects.get(user__username='worst_user'), post_type='news', title='worst_post', text='Text3')
 
 # Присвоить им категории.
