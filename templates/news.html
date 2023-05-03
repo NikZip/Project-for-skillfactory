@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+News
+{% endblock title %}
+
+
+{% block content %}
+   <h1>Новости</h1>
+   <hr>
+   {% if posts %}
+       {% load custom_filters %}
+       <div class="row">
+           {% for post in posts %}
+               <div class="col-sm border rounded">
+                   <div class="">
+                       <a href="/news/{{ post.pk }}" class="list-view-link">{{ post.title|censor }}</a>
+                   </div>
+                   <div class="">Create date: {{ post.creation_date|date:'d M Y' }}</div>
+                   <div class="">Preview: {{ post.preview|censor }}</div>
+               </div>
+           {% endfor %}
+       </div>
+   {% else %}
+       <h2>Opps</h2>
+   {% endif %}
+{% endblock content %}

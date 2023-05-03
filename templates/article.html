@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if post %}
+        {{ post.title }}
+    {% endif %}
+{% endblock title %}
+
+
+{% block content %}
+    {% if post %}
+        {% load custom_filters %}
+        <div class="">
+            <div class="">
+                <div class="">Title:{{ post.title|censor }}</div>
+                <div class="">Create date: {{ post.creation_date }}</div>
+                <div class="">Author: {{ post.get_post_author }}</div>
+                <div class="">Text: {{ post.text|censor }}</div>
+                <div class="">Post_type: {{ post.post_type }}</div>
+                <div class="">Categories:
+                {% for value in post.categories.all %}
+                    <div>-{{ value.name }}</div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}

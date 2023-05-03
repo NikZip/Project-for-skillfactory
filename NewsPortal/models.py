@@ -57,6 +57,10 @@ class Post(RatingSystem):
         prev_text_amount = 124
         return self.text[:prev_text_amount] + '...'
 
+    def get_post_author(self):
+        return self.author.user
+
+
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
