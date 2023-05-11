@@ -20,6 +20,9 @@ class RatingSystem(models.Model):
 class Author(RatingSystem):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.user.username
+
     def update_rating(self):
         posts = Post.objects.filter(author=self)
         comments = Comment.objects.filter(user=self.user)
@@ -41,12 +44,15 @@ class Author(RatingSystem):
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Post(RatingSystem):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
 
     type_choices = (('news', 'news'), ('article', 'article'))
-    post_type = models.CharField(max_length=7, choices=type_choices)
+    post_type = models.CharField(max_length=7, choices=type_choices, blank=False, null=False)
 
     creation_date = models.DateTimeField(auto_now_add=True)
     categories = models.ManyToManyField(Category, through='PostCategory')
@@ -59,7 +65,6 @@ class Post(RatingSystem):
 
     def get_post_author(self):
         return self.author.user
-
 
 
 class PostCategory(models.Model):

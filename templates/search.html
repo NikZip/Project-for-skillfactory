@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+News
+{% endblock title %}
+
+
+{% block content %}
+    <h1>Найти новости</h1>
+    <hr>
+    <div class="d-flex flex-row rounded border w-100 p-3 ">
+       <form action="" method="get">
+           {{ filter.form.as_div }}
+           <input type="submit" value="Найти" />
+       </form>
+    </div>
+
+   {% if filter.form.is_valid %}
+       {% load custom_filters %}
+
+       <div class="row">
+           {% for post in posts %}
+               <div class="d-flex flex-row rounded border w-100 p-3">
+                   <div class="col-sm">
+                       <a href="{% url 'post_detail' post.pk %}" class="list-view-link">{{ post.title|censor }}</a>
+                   </div>
+                   <div class="col-sm">Create date: {{ post.creation_date|date:'d M Y' }}</div>
+                   <div class="col-sm ">Preview: {{ post.preview|censor }}</div>
+               </div>
+           {% endfor %}
+       </div>
+
+   {% endif %}
+{% endblock content %}

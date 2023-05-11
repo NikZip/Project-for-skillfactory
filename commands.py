@@ -63,17 +63,3 @@ worst = Author.objects.get(user=User.objects.get(username='worst_user'))
 
 best.update_rating()
 worst.update_rating()
-
-# Вывести username и рейтинг лучшего пользователя (применяя сортировку и возвращая поля первого объекта).
-best_user_check = Author.objects.all().order_by('-rating')[0]
-print(best_user_check.user.username, best_user_check.rating)
-
-# Вывести дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи
-# основываясь на лайках/дислайках к этой статье
-best_post = Post.objects.all().order_by('-rating')[0]
-print(best_post.creation_date, best_post.author.user.username, best_post.rating, best_post.title, best_post.preview())
-
-# Вывести все комментарии (дата, пользователь, рейтинг, текст) к этой статье.
-comments = Comment.objects.filter(post=best_post)
-for comment in comments:
-    print(comment.creation_date, comment.user.username, comment.rating, comment.text)

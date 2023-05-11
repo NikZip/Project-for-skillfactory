@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}
+News
+{% endblock title %}
+
+{% block nav_bar %}
+    <a class="navbar-brand" href="{% url 'post_create' post_type='news' %}">Создать новость</a>
+    <a class="navbar-brand" href="{% url 'post_create' post_type='article' %}">Создать статью</a>
+{% endblock nav_bar %}
+
+{% block content %}
+    <h1>Новости</h1>
+    <hr>
+   {% if posts %}
+       {% load custom_filters %}
+
+       <div class="row">
+           {% for post in posts.all %}
+               <div class="col-sm border rounded">
+                   <div class="">
+                       <a href="{% url 'post_detail' post.pk %}" class="list-view-link">{{ post.title|censor }}</a>
+                   </div>
+                   <div class="">News type: {{ post.post_type}}</div>
+                   <div class="">Create date: {{ post.creation_date|date:'d M Y' }}</div>
+                   <div class="">Preview: {{ post.preview|censor }}</div>
+               </div>
+           {% endfor %}
+       </div>
+
+       <div class="row">
+           {% if page_obj.has_previous %}
+               <a href="?{% url_replace page=1 %}">1</a>
+               {% if page_obj.previous_page_number != 1 %}
+                   ...
+                   <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+               {% endif %}
+           {% endif %}
+
+           {{ page_obj.number }}
+
+           {% if page_obj.has_next %}
+               <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+               {% if paginator.num_pages != page_obj.next_page_number %}
+                   ...
+                   <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+               {% endif %}
+           {% endif %}
+       </div>
+   {% endif %}
+{% endblock content %}

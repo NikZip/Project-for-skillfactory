@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if post %}
+        {{ post.title }}
+    {% endif %}
+{% endblock title %}
+
+{% block nav_bar %}
+    <a class="navbar-brand" href="{% url 'post_update' post.post_type post.pk %}">Изменить</a>
+    <a class="navbar-brand" href="{% url 'post_delete' post.post_type post.pk %}">Удалить</a>
+{% endblock nav_bar %}
+
+{% block content %}
+    {% if post %}
+        {% load custom_filters %}
+        <div class="">
+            <div class="">
+                <div class="d-flex flex-row rounded border w-100 p-3">Title:{{ post.title|censor }}</div>
+                <div class="d-flex flex-row rounded border w-100 p-3">Create date: {{ post.creation_date }}</div>
+                <div class="d-flex flex-row rounded border w-100 p-3">Author: {{ post.get_post_author }}</div>
+                <div class="d-flex flex-row rounded border w-100 p-3">Text: {{ post.text|censor }}</div>
+                <div class="d-flex flex-row rounded border w-100 p-3">Post_type: {{ post.post_type }}</div>
+                <div class="d-flex flex-row rounded border w-100 p-3">Categories:
+                {% for value in post.categories.all %}
+                    <div>-{{ value }}</div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}

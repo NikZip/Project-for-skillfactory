@@ -26,7 +26,10 @@
 
     <!-- Nav bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="/news/">На главную</a>
+      <a class="navbar-brand" href="{% url 'posts_list' %}">На главную</a>
+        <a class="navbar-brand" href="{% url 'posts_search' %}">Поиск</a>
+        {% block nav_bar %}
+        {% endblock nav_bar %}
     </nav>
 
     <!-- Main body -->
