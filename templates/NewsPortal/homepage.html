@@ -1,4 +1,5 @@
-{% extends 'base.html' %}
+{% extends 'NewsPortal/base.html' %}
+{% load custom_filters %}
 
 {% block title %}
 News
@@ -7,9 +8,29 @@ News
 {% block nav_bar %}
     <a class="navbar-brand" href="{% url 'post_create' post_type='news' %}">Создать новость</a>
     <a class="navbar-brand" href="{% url 'post_create' post_type='article' %}">Создать статью</a>
+    {% if user.is_authenticated %}
+        <a class="navbar-brand me-auto" href="{% url 'account_logout' %}">Выйти</a>
+        {% if request.user|has_group:'common' and not request.user|has_group:'author' %}
+            <a class="navbar-brand me-auto" href="{% url 'upgrade' %}">Стать Автором</a>
+        {% endif %}
+        <div>>Welcome {{ user.get_username }} </div>
+    {% else %}
+        <a class="navbar-brand me-auto" href="{% url 'account_signup' %}">Регистрация</a>
+        <a class="navbar-brand me-auto" href="{% url 'account_login' %}">Войти</a>
+    {% endif %}
+
 {% endblock nav_bar %}
 
 {% block content %}
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <h1>Новости</h1>
     <hr>
    {% if posts %}

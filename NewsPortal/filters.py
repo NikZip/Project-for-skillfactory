@@ -14,3 +14,4 @@ class PostFilter(FilterSet):
         model = Post
         fields = ['text_query', 'author_name', 'creation_date']
 
+
