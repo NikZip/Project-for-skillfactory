@@ -1,0 +1,22 @@
+{% extends 'NewsPortal/base.html' %}
+{% load custom_filters %}
+{% block title %}Profile of {{ user.get_username }}{% endblock title %}
+
+{% block content %}
+    <h1>Subscribe to your favorite categories:</h1>
+
+    <div class="list-group row">
+        {% for category in object_list %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ category.name }}
+
+            {% if category|is_subscribed:request.user %}
+                <span class="badge badge-pill"><a class="btn" href="{% url 'unsubscribe' category.pk %}">Unsubscribe</a></span>
+            {% else %}
+                <span class="badge badge-primary badge-pill"><a class="btn btn-primary" href="{% url 'subscribe' category.pk %}">Subscribe</a></span>
+            {% endif %}
+            </li>
+        {% endfor %}
+    </div>
+{% endblock content %}
+

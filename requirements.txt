@@ -1,0 +1,9 @@
+Django~=4.2
+celery~=5.2.7
+python-dotenv~=1.0.0
+django-allauth~=0.54.0
+django-filter~=23.2
+redis
+flower
+numpy
+django-celery-beat

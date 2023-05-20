@@ -2,10 +2,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from .models import Post, Author
+
+# debug
+from .tasks import *
+from Project import settings
+
+
+from .models import Post, Author, Category
 from .filters import PostFilter
 from .forms import NewsForm
 
@@ -19,7 +25,6 @@ class NewsList(ListView):
 
 
 class NewsSearch(NewsList):
-
     template_name = 'NewsPortal/search.html'
 
     def get_queryset(self):
@@ -48,6 +53,7 @@ class PostCreate(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form, **kwargs):
         post = form.save(commit=False)
+        post.author = Author.objects.get(user_id=self.request.user.id)
         post.post_type = self.kwargs['post_type']
         return super().form_valid(form)
 
@@ -84,7 +90,54 @@ def make_author(request):
         author.save()
 
         messages.info(request, 'Author created successfully')
-        return HttpResponseRedirect('/')
+        return redirect('posts_list')
     else:
         messages.info(request, 'You have no access to this page')
-        return HttpResponseRedirect('/')
+        return redirect('posts_list')
+
+
+#  Profiles
+class ProfileView(LoginRequiredMixin, ListView):
+    model = Category
+    template_name = 'NewsPortal/profile.html'
+
+
+def subscribe(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    category.subscribers.add(request.user)
+    category.save()
+    messages.info(request, f'Successfully subscribed to {category}')
+    return redirect('user_profile')
+
+
+def unsubscribe(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    category.subscribers.remove(request.user)
+    category.save()
+    messages.info(request, f'Successfully unsubscribed of {category}')
+    return redirect('user_profile')
+
+
+#  Debugging
+class DebugView(ListView):
+    model = Category
+    template_name = 'NewsPortal/debug.html'
+
+
+def debug_send_sub_email(request):
+    debug_email = [settings.EMAIL_DEBUG]
+    first_post = Post.objects.all().first()
+    send_sub_notifications.apply_async(args=[first_post.pk, debug_email], countdown=0)
+    return redirect('debug')
+
+
+def debug_send_welcome_notification(request):
+    debug_email = [settings.EMAIL_DEBUG]
+    send_welcome_notification.apply_async(args=[debug_email], countdown=0)
+    return redirect('debug')
+
+
+def debug_send_best_weekly_posts(request):
+    debug_email = [settings.EMAIL_DEBUG]
+    send_best_weekly_posts.apply_async(args=[debug_email], countdown=0)
+    return redirect('debug')

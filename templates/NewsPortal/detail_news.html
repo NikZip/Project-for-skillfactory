@@ -1,15 +1,17 @@
 {% extends 'NewsPortal/base.html' %}
-
+{% load custom_filters %}
 {% block title %}
     {% if post %}
         {{ post.title }}
     {% endif %}
 {% endblock title %}
 
-{% block nav_bar %}
-    <a class="navbar-brand" href="{% url 'post_update' post.post_type post.pk %}">Изменить</a>
-    <a class="navbar-brand" href="{% url 'post_delete' post.post_type post.pk %}">Удалить</a>
-{% endblock nav_bar %}
+{% block nav_bar_left_if_user %}
+    {% if request.user|has_group:'author' %}
+        <a class="nav-item nav-link activ" href="{% url 'post_update' post.post_type post.pk %}">Изменить</a>
+        <a class="nav-item nav-link activ" href="{% url 'post_delete' post.post_type post.pk %}">Удалить</a>
+    {% endif %}
+{% endblock nav_bar_left_if_user %}
 
 {% block content %}
     {% if post %}
@@ -23,7 +25,7 @@
                 <div class="d-flex flex-row rounded border w-100 p-3">Post_type: {{ post.post_type }}</div>
                 <div class="d-flex flex-row rounded border w-100 p-3">Categories:
                 {% for value in post.categories.all %}
-                    <div>-{{ value }}</div>
+                    <span class="badge badge-pill badge-primary">{{ value }}</span>
                 {% endfor %}
                 </div>
             </div>

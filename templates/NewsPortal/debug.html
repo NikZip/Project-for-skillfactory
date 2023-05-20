@@ -1,0 +1,30 @@
+{% extends 'NewsPortal/base.html' %}
+{% load custom_filters %}
+{% block title %}
+    Debug
+{% endblock title %}
+
+
+{% block nav_bar_left_if_user %}
+
+{% endblock nav_bar_left_if_user %}
+
+
+{% block content %}
+    <div class="list-group row">
+        <ol>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Send sub email
+                <span class="badge badge-primary badge-pill"><a class="btn btn-primary" href="{% url 'debug_sub' %}">Test</a></span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Send welcome email
+                <span class="badge badge-primary badge-pill"><a class="btn btn-primary" href="{% url 'debug_welcome' %}">Test</a></span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Send best weekly email
+                <span class="badge badge-primary badge-pill"><a class="btn btn-primary" href="{% url 'debug_send_weekly' %}">Test</a></span>
+            </li>
+        </ol>
+    </div>
+{% endblock content %}

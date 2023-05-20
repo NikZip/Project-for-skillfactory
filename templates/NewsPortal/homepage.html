@@ -5,21 +5,14 @@
 News
 {% endblock title %}
 
-{% block nav_bar %}
-    <a class="navbar-brand" href="{% url 'post_create' post_type='news' %}">Создать новость</a>
-    <a class="navbar-brand" href="{% url 'post_create' post_type='article' %}">Создать статью</a>
-    {% if user.is_authenticated %}
-        <a class="navbar-brand me-auto" href="{% url 'account_logout' %}">Выйти</a>
-        {% if request.user|has_group:'common' and not request.user|has_group:'author' %}
-            <a class="navbar-brand me-auto" href="{% url 'upgrade' %}">Стать Автором</a>
-        {% endif %}
-        <div>>Welcome {{ user.get_username }} </div>
-    {% else %}
-        <a class="navbar-brand me-auto" href="{% url 'account_signup' %}">Регистрация</a>
-        <a class="navbar-brand me-auto" href="{% url 'account_login' %}">Войти</a>
+{% block nav_bar_left_if_user %}
+    {% if request.user|has_group:'author' %}
+        <a class="nav-item nav-link active" href="{% url 'post_create' post_type='news' %}">Создать новость</a>
+        <a class="nav-item nav-link active" href="{% url 'post_create' post_type='article' %}">Создать статью</a>
+    {% elif request.user|has_group:'common' and not request.user|has_group:'author' %}
+        <a class="nav-item nav-link active" href="{% url 'upgrade' %}">Стать Автором</a>
     {% endif %}
-
-{% endblock nav_bar %}
+{% endblock nav_bar_left_if_user %}
 
 {% block content %}
 

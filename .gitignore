@@ -154,3 +154,8 @@ cython_debug/
 .gitignore
 .gitattributes
 
+
+
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir

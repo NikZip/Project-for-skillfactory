@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Недельная подборка лучших новостей</title>
+</head>
+<body>
+    <h2>Мы подобрали для вас топ 10 лучших новостей за эту неделю:</h2>
+    <hr>
+    <div class="row">
+        {% for post in posts %}
+            <div class="d-flex flex-row rounded border w-100 p-3">
+                <div class="col-sm">
+                    <a href="{{ post.get_post_url }}" class="list-view-link">{{ post.title }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

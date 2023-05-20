@@ -28,3 +28,8 @@ def url_replace(context, **kwargs):
 @register.filter(name="has_group")
 def has_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
+
+
+@register.filter(name="is_subscribed")
+def is_subscribed(category, user):
+    return category.subscribers.filter(pk=user.pk).exists()
