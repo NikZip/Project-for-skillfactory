@@ -89,6 +89,13 @@ TEMPLATES = [
         },
     },
 ]
+# CACHES
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+    }
+}
 
 # AuthStuff
 LOGIN_URL = '/accounts/login/'
@@ -100,7 +107,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -175,3 +182,111 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGS_DIR = os.path.join(BASE_DIR, 'logs')
+
+if not os.path.exists(LOGS_DIR):
+    os.makedirs(LOGS_DIR)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'general_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGS_DIR, 'general.log'),
+            'maxBytes': 10485760,  # 10MB
+            'backupCount': 10,
+            'formatter': 'verbose',
+        },
+        'errors_file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGS_DIR, 'errors.log'),
+            'maxBytes': 10485760,  # 10MB
+            'backupCount': 10,
+            'formatter': 'error',
+        },
+        'security_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGS_DIR, 'security.log'),
+            'maxBytes': 10485760,  # 10MB
+            'backupCount': 10,
+            'formatter': 'verbose',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': False,
+            'formatter': 'mail',
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {message} {pathname}',
+            'style': '{',
+        },
+        'error': {
+            'format': '{asctime} {levelname} {message} {pathname}\n{exc_info}',
+            'style': '{',
+        },
+        'mail': {
+            'format': '{asctime} {levelname} {message} {pathname}',
+            'style': '{',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'general_file', 'errors_file', 'security_file', 'mail_admins'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['errors_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['errors_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.template': {
+            'handlers': ['errors_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['errors_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['security_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+    'filters': {
+        'console_filter': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'file_filter': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+}
+
+
+if DEBUG:
+    LOGGING['handlers']['console']['filters'] = ['console_filter']
+else:
+    LOGGING['handlers']['general_file']['filters'] = ['file_filter']
+    LOGGING['handlers']['mail_admins']['filters'] = ['file_filter']

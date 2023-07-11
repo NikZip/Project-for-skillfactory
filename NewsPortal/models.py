@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import timedelta
-
+from django.core.cache import cache
 from django.urls import reverse
 from django.utils import timezone
 from numpy import unique
@@ -105,6 +105,10 @@ class Post(RatingSystem):
 
     def get_post_author(self):
         return self.author.user
+
+    def save(self, *args, **kwargs):
+        super().save(self, *args, **kwargs)
+        cache.delete(f'post-{self.pk}')
 
 
 class PostCategory(models.Model):
